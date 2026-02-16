@@ -2,23 +2,40 @@ from account import *
 
 accounts = {}
 
+def get_account_number():
+    while True:
+        try:
+            account_number = input("Enter account number: ")
+            if int(account_number) < 0:
+                raise WrongAccountNumberError("Account number cannot be negative")
+            elif any(account.account_number==account_number for account in accounts):
+                raise AccountAlreadyExists()
+            else:
+               return int(account_number)
+        except BankError as e:
+            print(e.message)
+        except Exception:
+            print("Unknown error")
+
 def get_account():
     while True:
         try:
             account_number = input("Enter account number: ")
             if int(account_number) < 0:
-                raise ValueError
+                raise WrongAccountNumberError("Account number cannot be negative")
             elif any(account.account_number==account_number for account in accounts):
-                raise ValueError("WRONG ACCOUNT NUMBER!!!!!!!!!!!!!!!!!!!!!!!!!")
+                raise AccountAlreadyExists()
             else:
                 new_account = Account(account_number, input("Enter name: "), input("Enter balance: "))
                 accounts[new_account.account_number]=new_account
-
             break
-        finally:
-            print("Invalid Account Number. try again")
+        except BankError as e:
+            print(e.message)
+        except Exception:
+            print("Unknown error")
 
-while True:
+action = 1
+while action in range(1,7):
     while True:
         print("\nAction:"
               "\n(1) Create new account"
@@ -30,70 +47,57 @@ while True:
               "\n(7) Exit")
         try:
             action = int(input("\nChoose an action: "))
-            if not (action==7 or action==1):
-                number = int(input("what is your account number? : "))
-                account=accounts[number]
-            if not action in range(1, 7):
-                raise ValueError
+            if not action in range(1,7):
+                raise WrongActionError("Wrong Action. Try again.")
             break
-        except Exception:
-            print("\nInvalid input. Try again.")
+        except WrongActionError as e:
+            print(e.message)
+        except ValueError as e:
+            print("Invalid Input. Try again.")
+        finally:
+            print("Unknown Error. Try again.")
+
+    account = None
+    if action != 1 and action != 7:
+        account_number = get_account_number()
+        account = accounts[account_number]
 
     match action:
-        case 1:
+        case 1: # -- Create Account --
             try:
                 get_account()
             finally:
                 pass
             break
-        case 2:
+
+        case 2: # -- Deposit --
             try:
                 account.deposit(input("Enter amount to deposit: "))
-            except ValueError as e:
+            except BankError as e:
                 print(e.message)
             break
 
-        case 3:
+        case 3: # -- Withdraw --
             try:
                 account.withdraw(input("Enter amount to withdraw: "))
-            except ValueError as e:
+            except BankError as e:
                 print(e.message)
             break
-        case 4:
+        case 4: # -- Transfer --
             try:
-                to=account[input("Enter an account to transfer")]
-                account.transfer(to,input("Enter amount to deposit: "))
+                to=account[get_account_number()]
+                account.transfer(to,int(input("Enter amount to deposit: ")))
             except KeyError:
                 print("\naccount doesnt exist. Guten morgen.")
-            finally:
-                pass
+            except BankError as e:
+                print(e.message)
             break
-        case 5:
-            try:
-                print(f"The balance is {account.balance}")
-            finally:
-                pass
+        case 5: # -- Show Balance --
+            print(f"The balance is {account.balance}")
             break
-        case 6:
-            try:
-                account.print_actions()
-            finally:
-                pass
+        case 6: # -- Show Past Actions --
+            account.print_actions()
             break
-        case 7:
-            try:
-                print("Goodbye")
-                break
-            finally:
-                pass
-            break
-
-
-
-
-
-
-
-
-
-
+        case 7: # -- Exit --
+            print("Goodbye")
+            exit()
