@@ -8,7 +8,12 @@ def get_account():
             account_number = input("Enter account number: ")
             if int(account_number) < 0:
                 raise ValueError
-            
+            elif any(account.account_number==account_number for account in accounts):
+                raise ValueError("WRONG ACCOUNT NUMBER!!!!!!!!!!!!!!!!!!!!!!!!!")
+            else:
+                new_account = Account(account_number, input("Enter name: "), input("Enter balance: "))
+                accounts[new_account.account_number]=new_account
+
             break
         finally:
             print("Invalid Account Number. try again")
@@ -20,7 +25,7 @@ def get_account():
 
 while True:
     while True:
-        print("\nChoose an action:"
+        print("\nAction:"
               "\n(1) Create new account"
               "\n(2) Deposit money"
               "\n(3) Withdraw money"
@@ -30,6 +35,9 @@ while True:
               "\n(7) Exit")
         try:
             action = int(input("\nChoose an action: "))
+            if not action==1:
+                number = int(input("what is your account number? : "))
+                account=accounts[number]
             if not action in range(1, 7):
                 raise ValueError
             break
@@ -38,7 +46,50 @@ while True:
     match action:
         case 1:
             try:
-                account = get_account()
+                get_account()
+            finally:
+                pass
+            break
+        case 2:
+            try:
+                account.deposit(input("Enter amount to deposit: "))
+            finally:
+                pass
+            break
+
+        case 3:
+            try:
+                account.withdraw(input("Enter amount to withdraw: "))
+            finally:
+                pass
+            break
+        case 4:
+            try:
+                to=account[input("Enter an account to transfer")]
+                account.transfer(to,input("Enter amount to deposit: "))
+            except KeyError:
+                print("\naccount doesnt exist. Guten morgen.")
+            finally:
+                pass
+            break
+        case 5:
+            try:
+                print(f"The balance is {account.balance}")
+            finally:
+                pass
+            break
+        case 6:
+            try:
+                account.show_balance()
+            finally:
+                pass
+            break
+        case 7:
+            try:
+                break
+            finally:
+                pass
+            break
 
 
 
