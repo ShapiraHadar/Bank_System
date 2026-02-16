@@ -18,11 +18,6 @@ def get_account():
         finally:
             print("Invalid Account Number. try again")
 
-
-
-
-
-
 while True:
     while True:
         print("\nAction:"
@@ -35,7 +30,7 @@ while True:
               "\n(7) Exit")
         try:
             action = int(input("\nChoose an action: "))
-            if not action==1:
+            if not (action==7 or action==1):
                 number = int(input("what is your account number? : "))
                 account=accounts[number]
             if not action in range(1, 7):
@@ -43,6 +38,7 @@ while True:
             break
         except Exception:
             print("\nInvalid input. Try again.")
+
     match action:
         case 1:
             try:
@@ -53,15 +49,15 @@ while True:
         case 2:
             try:
                 account.deposit(input("Enter amount to deposit: "))
-            finally:
-                pass
+            except ValueError as e:
+                print(e.message)
             break
 
         case 3:
             try:
                 account.withdraw(input("Enter amount to withdraw: "))
-            finally:
-                pass
+            except ValueError as e:
+                print(e.message)
             break
         case 4:
             try:
@@ -80,12 +76,13 @@ while True:
             break
         case 6:
             try:
-                account.show_balance()
+                account.print_actions()
             finally:
                 pass
             break
         case 7:
             try:
+                print("Goodbye")
                 break
             finally:
                 pass
