@@ -11,7 +11,7 @@ class WrongAccountNumberError(BankError):
     def __init__(self, message="Wrong Account Number Error"):
         super().__init__(message)
 
-class AccountNotFound(BankError):
+class AccountNotFoundError(BankError):
     def __init__(self, message="Account Not Found"):
         super().__init__(message)
 
@@ -23,6 +23,6 @@ class NotEnoughMoneyError(BankError):
     def __init__(self, message="Not Enough Money Error"):
         super().__init__(message)
 
-class AccountAlreadyExists(BankError):
+class AccountAlreadyExistsError(BankError):
     def __init__(self, message="Account Already Exists"):
         super().__init__(message)
